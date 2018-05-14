@@ -1,0 +1,119 @@
+<!--
+  Generated template for the ScorecardPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>Carte de score</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content>
+  <ion-card>
+    <ion-item-group>
+      <ng-container *ngFor="let hole of game.courseComplete.holesComplete; let i = index">
+        <ion-item-divider color="light" *ngIf="i==0">Aller</ion-item-divider>
+        <ion-item *ngIf="i==0">
+          <ion-row>
+            <ion-col col-2>Trou</ion-col>
+            <ion-col col-2>Par</ion-col>
+            <ion-col col-2>Hdp</ion-col>
+            <ion-col col-2>Score</ion-col>
+            <ion-col col-2>Brut</ion-col>
+            <ion-col col-2>Net</ion-col>
+          </ion-row>
+        </ion-item>
+        <ion-item *ngIf="i<9">
+          <ion-row>
+            <ion-col style="font-weight: bold" col-2>{{hole.num}}</ion-col>
+            <ion-col col-2>
+              <ion-badge color="primary" *ngIf="hole.detail.par==4">{{hole.detail.par}}</ion-badge>
+              <ion-badge color="secondary" *ngIf="hole.detail.par==3">{{hole.detail.par}}</ion-badge>
+              <ion-badge color="danger" *ngIf="hole.detail.par==5">{{hole.detail.par}}</ion-badge>
+            </ion-col>
+            <ion-col col-2>{{hole.handicap}}</ion-col>
+            <ion-col col-2 *ngIf="game.scores[hole.detail.holeId]">{{game.scores[hole.detail.holeId][game.participantsComplete[0].uid]}}</ion-col>
+            <ion-col col-2 *ngIf="game.scores[hole.detail.holeId]">{{calculateGrossPoints(hole.detail.par, game.scores[hole.detail.holeId][game.participantsComplete[0].uid])}}</ion-col>
+            <ion-col col-2 *ngIf="game.scores[hole.detail.holeId]">{{calculateNetPoints(hole.handicap, game.participantsComplete[0], hole.detail.par, game.scores[hole.detail.holeId][game.participantsComplete[0].uid])}}</ion-col>
+          </ion-row>
+        </ion-item>
+        <ion-item *ngIf="i==9" color="light">
+          <ion-row>
+            <ion-col style="font-weight: bold" col-2></ion-col>
+            <ion-col col-2>
+              <ion-badge color="primary">{{parTotali}}</ion-badge>
+            </ion-col>
+            <ion-col col-2></ion-col>
+            <ion-col col-2>{{totali[game.participants[0]]}}</ion-col>
+            <ion-col col-2>{{totaliBrut[game.participants[0]]}}</ion-col>
+            <ion-col col-2>{{totaliNet[game.participants[0]]}}</ion-col>
+          </ion-row>
+        </ion-item>
+      </ng-container>
+    </ion-item-group>
+  </ion-card>
+  <ion-card>
+    <ion-item-group>
+      <ng-container *ngFor="let hole of game.courseComplete.holesComplete; let i = index">
+        <ion-item-divider color="light" *ngIf="i==9">Retour</ion-item-divider>
+        <ion-item *ngIf="i==9">
+            <ion-row>
+              <ion-col col-2>Trou</ion-col>
+              <ion-col col-2>Par</ion-col>
+              <ion-col col-2>Hdp</ion-col>
+              <ion-col col-2>Score</ion-col>
+              <ion-col col-2>Brut</ion-col>
+              <ion-col col-2>Net</ion-col>
+            </ion-row>
+          </ion-item>
+        <ion-item *ngIf="i>=9">
+          <ion-row>
+            <ion-col style="font-weight: bold" col-2>{{hole.num}}</ion-col>
+            <ion-col col-2>
+              <ion-badge color="primary" *ngIf="hole.detail.par==4">{{hole.detail.par}}</ion-badge>
+              <ion-badge color="secondary" *ngIf="hole.detail.par==3">{{hole.detail.par}}</ion-badge>
+              <ion-badge color="danger" *ngIf="hole.detail.par==5">{{hole.detail.par}}</ion-badge>
+            </ion-col>
+            <ion-col col-2>{{hole.handicap}}</ion-col>
+            <ion-col col-2 *ngIf="game.scores[hole.detail.holeId]">{{game.scores[hole.detail.holeId][game.participantsComplete[0].uid]}}</ion-col>
+            <ion-col col-2 *ngIf="game.scores[hole.detail.holeId]">{{calculateGrossPoints(hole.detail.par, game.scores[hole.detail.holeId][game.participantsComplete[0].uid])}}</ion-col>
+            <ion-col col-2 *ngIf="game.scores[hole.detail.holeId]">{{calculateNetPoints(hole.handicap, game.participantsComplete[0], hole.detail.par, game.scores[hole.detail.holeId][game.participantsComplete[0].uid])}}</ion-col>
+          </ion-row>
+        </ion-item>
+        <ion-item *ngIf="i==17" color="light">
+          <ion-row>
+            <ion-col style="font-weight: bold" col-2></ion-col>
+            <ion-col col-2>
+              <ion-badge color="primary">{{parTotalo}}</ion-badge>
+            </ion-col>
+            <ion-col col-2></ion-col>
+            <ion-col col-2>{{totalo[game.participants[0]]}}</ion-col>
+            <ion-col col-2>{{totaloBrut[game.participants[0]]}}</ion-col>
+            <ion-col col-2>{{totaloNet[game.participants[0]]}}</ion-col>
+          </ion-row>
+        </ion-item>
+      </ng-container>
+    </ion-item-group>
+  </ion-card>
+  <ion-card>
+    <ion-item-group>
+      <ion-item color="dark">
+        <ion-row>
+          <ion-col style="font-weight: bold" col-2></ion-col>
+          <ion-col col-2>
+            <ion-badge color="light">{{parTotal}}</ion-badge>
+          </ion-col>
+          <ion-col col-2></ion-col>
+          <ion-col col-2 *ngIf="total">{{total[game.participants[0]]}}</ion-col>
+          <ion-col col-2 *ngIf="totalBrut">{{totalBrut[game.participants[0]]}}</ion-col>
+          <ion-col col-2 *ngIf="totalNet">{{totalNet[game.participants[0]]}}</ion-col>
+        </ion-row>
+      </ion-item>
+    </ion-item-group>
+  </ion-card>
+</ion-content>

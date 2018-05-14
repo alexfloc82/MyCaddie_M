@@ -1,5 +1,18 @@
-<ion-tabs>
-  <ion-tab [root]="tab1Root" tabTitle="Home" tabIcon="home"></ion-tab>
-  <ion-tab [root]="tab2Root" tabTitle="About" tabIcon="information-circle"></ion-tab>
-  <ion-tab [root]="tab3Root" tabTitle="Contact" tabIcon="contacts"></ion-tab>
+
+  <ion-header *ngIf="!isLogged">
+
+  <ion-navbar>
+    <ion-title>login</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding *ngIf="!isLogged">
+  <button ion-button full (click)="loginWithGoogle()">Se connecter avec google</button>
+</ion-content>
+<ion-tabs *ngIf="isLogged">
+  <ion-tab [root]="tab1Root" tabTitle="Parties" tabIcon="trophy"></ion-tab>
+  <ion-tab [root]="tab2Root" tabTitle="Profile" tabIcon="contact"></ion-tab>
+  <ion-tab [root]="tab3Root" tabTitle="Contacts" tabIcon="contacts"></ion-tab>
 </ion-tabs>
