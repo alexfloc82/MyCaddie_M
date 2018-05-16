@@ -10,6 +10,7 @@ import { SharedModule } from '../shared/shared.module';
 import { ScorecardPageModule } from '../pages/scorecard/scorecard.module';
 import { NewGamePageModule } from '../pages/new-game/new-game.module';
 import { ScoreEditPageModule } from '../pages/score-edit/score-edit.module';
+import { NewContactPageModule } from '../pages/new-contact/new-contact.module'
 
 import { environment } from '../../environments/environment';
 
@@ -38,7 +39,8 @@ import {GameService} from '../shared/game.service';
     AngularFirestoreModule, AngularFireAuthModule, 
     ScorecardPageModule,
     NewGamePageModule, 
-    ScoreEditPageModule
+    ScoreEditPageModule,
+    NewContactPageModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [

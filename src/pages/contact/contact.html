@@ -1,17 +1,21 @@
 <ion-header>
   <ion-navbar>
-    <ion-title>
-      Contact
-    </ion-title>
+    <ion-title>Contacts</ion-title>
+    <ion-buttons end>
+        <button ion-button clear color="primary" (click)="newContact()">Nouveau contact
+        </button>
+      </ion-buttons>
   </ion-navbar>
 </ion-header>
 
 <ion-content>
+  <ion-searchbar (ionInput)="getItems($event)"></ion-searchbar>
   <ion-list>
-    <ion-list-header>Follow us on Twitter</ion-list-header>
-    <ion-item>
-      <ion-icon name="ionic" item-start></ion-icon>
-      @ionicframework
+    <ion-item *ngFor="let friend of friends">
+        <ion-avatar item-start>
+            <img [src]="friend.picture">
+          </ion-avatar>
+          <h2>{{friend.fullname}}</h2>
     </ion-item>
   </ion-list>
 </ion-content>

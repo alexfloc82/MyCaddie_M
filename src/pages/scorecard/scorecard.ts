@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { LoadingController, Loading } from 'ionic-angular';
 import { IonicPage, NavController, NavParams, PopoverController } from 'ionic-angular';
 import { GameService } from '../../shared/game.service';
-import { AngularFirestore } from 'angularfire2/firestore';
 
 import { User, Hole } from '../../shared/datamodel';
 
@@ -44,7 +43,6 @@ export class ScorecardPage {
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
     private gs: GameService,
-    private afs: AngularFirestore,
     public loadingCtrl: LoadingController,
     public popoverCtrl: PopoverController) {
       

@@ -65,10 +65,66 @@
         </ion-item>
     </ion-list>
     <ion-list inset *ngSwitchCase="'wood'">
+        <ion-item-divider color="light">Driver</ion-item-divider>
+        <ng-container *ngFor="let club of user.clubs">
+            <ion-item *ngIf="club.type=='D'">
+                <ion-label>{{(club.type|club)}} {{club.c_number}}</ion-label>
+                <ion-input type="number" [(ngModel)]="club.dist_to"></ion-input>
+                <ion-toggle [(ngModel)]="club.isCarried"></ion-toggle>
+            </ion-item>
+        </ng-container>
+      <ion-item-divider color="light">Bois</ion-item-divider>
+      <ng-container *ngFor="let club of user.clubs">
+          <ion-item *ngIf="club.type=='W'">
+              <ion-label>{{(club.type|club)}} {{club.c_number}}</ion-label>
+              <ion-input type="number" [(ngModel)]="club.dist_to"></ion-input>
+              <ion-toggle [(ngModel)]="club.isCarried"></ion-toggle>
+          </ion-item>
+      </ng-container>
+      <ion-item-divider color="light">Hybrides</ion-item-divider>
+      <ng-container *ngFor="let club of user.clubs">
+          <ion-item *ngIf="club.type=='H'">
+              <ion-label>{{(club.type|club)}} {{club.c_number}}</ion-label>
+              <ion-input type="number" [(ngModel)]="club.dist_to"></ion-input>
+              <ion-toggle [(ngModel)]="club.isCarried"></ion-toggle>
+          </ion-item>
+      </ng-container>
     </ion-list>
     <ion-list inset *ngSwitchCase="'iron'">
+        <ion-item-divider color="light">Fers</ion-item-divider>
+        <ng-container *ngFor="let club of user.clubs">
+            <ion-item *ngIf="club.type=='I'">
+                <ion-label>{{(club.type|club)}} {{club.c_number}}</ion-label>
+                <ion-input type="number" [(ngModel)]="club.dist_to"></ion-input>
+                <ion-toggle [(ngModel)]="club.isCarried"></ion-toggle>
+            </ion-item>
+        </ng-container>
+        <ion-item-divider color="light">Sand</ion-item-divider>
+        <ng-container *ngFor="let club of user.clubs">
+            <ion-item *ngIf="club.type=='S'">
+                <ion-label>{{(club.type|club)}} {{club.c_number}}</ion-label>
+                <ion-input type="number" [(ngModel)]="club.dist_to"></ion-input>
+                <ion-toggle [(ngModel)]="club.isCarried"></ion-toggle>
+            </ion-item>
+        </ng-container>
     </ion-list>
     <ion-list inset *ngSwitchCase="'others'">
+        <ion-item-divider color="light">Pitch</ion-item-divider>
+        <ng-container *ngFor="let club of user.clubs">
+            <ion-item *ngIf="club.type=='J'">
+                <ion-label>{{(club.type|club)}} {{club.c_number}}</ion-label>
+                <ion-input type="number" [(ngModel)]="club.dist_to"></ion-input>
+                <ion-toggle [(ngModel)]="club.isCarried"></ion-toggle>
+            </ion-item>
+        </ng-container>
+        <ion-item-divider color="light">Putter</ion-item-divider>
+        <ng-container *ngFor="let club of user.clubs">
+            <ion-item *ngIf="club.type=='P'">
+                <ion-label>{{(club.type|club)}} {{club.c_number}}</ion-label>
+                <ion-input type="number" [(ngModel)]="club.dist_to"></ion-input>
+                <ion-toggle [(ngModel)]="club.isCarried"></ion-toggle>
+            </ion-item>
+        </ng-container>
     </ion-list>
   </div>
 
