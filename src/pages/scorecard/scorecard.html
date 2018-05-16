@@ -28,7 +28,7 @@
             <ion-col col-2>Net</ion-col>
           </ion-row>
         </ion-item>
-        <ion-item *ngIf="i<9">
+        <ion-item *ngIf="i<9" (click)="editScore(game, hole, game.participantsComplete[0])">
           <ion-row>
             <ion-col style="font-weight: bold" col-2>{{hole.num}}</ion-col>
             <ion-col col-2>
@@ -71,7 +71,7 @@
               <ion-col col-2>Net</ion-col>
             </ion-row>
           </ion-item>
-        <ion-item *ngIf="i>=9">
+        <ion-item *ngIf="i>=9" (click)="editScore(game, hole, game.participantsComplete[0])">
           <ion-row>
             <ion-col style="font-weight: bold" col-2>{{hole.num}}</ion-col>
             <ion-col col-2>

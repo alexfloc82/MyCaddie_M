@@ -1,0 +1,63 @@
+<!--
+  Generated template for the NewGamePage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>Partie</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content>
+  <ion-segment [(ngModel)]="tab">
+    <ion-segment-button value="course">
+      Parcours
+    </ion-segment-button>
+    <ion-segment-button value="players">
+      Joueurs
+    </ion-segment-button>
+  </ion-segment>
+  <div [ngSwitch]="tab">
+    <ion-list inset *ngSwitchCase="'course'">
+      <ion-item>
+        <ion-label>Club</ion-label>
+        <ion-select [(ngModel)]="newGame.club" (ionChange)="onClubSelect()">
+          <ion-option value="-">-</ion-option>
+          <ion-option *ngFor="let club of clubs" [value]="club.clubId">{{club.name}}</ion-option>
+        </ion-select>
+      </ion-item>
+      <ion-item>
+        <ion-label>Parcours</ion-label>
+        <ion-select class="form-control" [(ngModel)]="newGame.course" (ionChange)="onCourseSelect()">
+          <ion-option *ngFor="let course of courses" [value]="course.courseId">{{course.name}}</ion-option>
+        </ion-select>
+      </ion-item>
+      <ion-item>
+        <ion-label>Formule de Jeu</ion-label>
+        <ion-select class="form-control" [(ngModel)]="newGame.formula">
+          <ion-option value="A">Stroke play</ion-option>
+          <ion-option value="B">Match play</ion-option>
+        </ion-select>
+      </ion-item>
+    </ion-list>
+    <ion-list inset *ngSwitchCase="'players'">
+        <ion-list>
+            <ion-item>
+              <ion-avatar item-start>
+                <img [src]="currentUserInfo.picture">
+              </ion-avatar>
+              <h2>{{currentUserInfo.fullname}}</h2>
+            </ion-item>
+          </ion-list>
+    </ion-list>
+  </div>
+
+  <div padding>
+    <button ion-button color="primary" block (click)="save()">Créer partie</button>
+  </div>
+</ion-content>

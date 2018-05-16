@@ -118,6 +118,7 @@ export class Game {
 	club: string;
 	course: string;
 	formula: string;
+	id:string;
 	participants: string[];
 	teamA: string[];
 	teamB: string[];

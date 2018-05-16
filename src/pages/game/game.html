@@ -2,7 +2,7 @@
   <ion-navbar>
     <ion-title>Parties</ion-title>
     <ion-buttons end>
-      <button ion-button clear color="primary">Nouvelle partie
+      <button ion-button clear color="primary" (click)="newGame()">Nouvelle partie
       </button>
     </ion-buttons>
   </ion-navbar>
@@ -10,11 +10,23 @@
 
 <ion-content padding>
   <ion-list>
-    <button ion-item *ngFor="let game of userGames" (click)="gameSelected(game)">
-      <ion-icon name="information-circle" color="primary" *ngIf="!game.isOpen" item-start></ion-icon>
-      <ion-icon name="alert" color="danger" *ngIf="game.isOpen" item-start></ion-icon>
-      <h2>{{game.clubComplete.name}}</h2>
-      <h3>{{game.courseComplete.name}} - {{(game.date | date:'mediumDate')}}</h3>
-    </button>
+    <ion-item-sliding *ngFor="let game of userGames" >
+      <button ion-item (click)="gameSelected(game)">
+        <ion-icon name="information-circle" color="primary" *ngIf="!game.isOpen" item-start></ion-icon>
+        <ion-icon name="alert" color="danger" *ngIf="game.isOpen" item-start></ion-icon>
+        <h2>{{game.clubComplete.name}}</h2>
+        <h3>{{game.courseComplete.name}} - {{(game.date | date:'mediumDate')}}</h3>
+      </button>
+      <ion-item-options side="right">
+        <button ion-button color="light" (click)="presentActionSheet(game)">
+          <ion-icon name="ios-more"></ion-icon>
+          Actions
+        </button>
+        <button ion-button color="danger" (click)="modifyGame(game)">
+            <ion-icon name="create"></ion-icon>
+            Modifier
+          </button>
+      </ion-item-options>
+    </ion-item-sliding>
   </ion-list>
 </ion-content>

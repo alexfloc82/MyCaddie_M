@@ -1,9 +1,12 @@
 import { Component } from '@angular/core';
 import { LoadingController, Loading } from 'ionic-angular';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, PopoverController } from 'ionic-angular';
 import { GameService } from '../../shared/game.service';
+import { AngularFirestore } from 'angularfire2/firestore';
 
-import { User } from '../../shared/datamodel';
+import { User, Hole } from '../../shared/datamodel';
+
+import { ScoreEditPage } from '../score-edit/score-edit';
 
 /**
  * Generated class for the ScorecardPage page.
@@ -41,37 +44,45 @@ export class ScorecardPage {
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
     private gs: GameService,
-    public loadingCtrl: LoadingController) {
-    this.loader = this.loadingCtrl.create({ content: "Please wait..." });
-    this.loader.present();
-    this.game = navParams.data.game;
-    Promise.all([
-      this.gs.getParticipantsDetail(this.game.participants),
-      this.gs.getHolesDetail(this.game.club, this.game.courseComplete.holes)
-    ]).then((result) => {
-      this.game.participantsComplete = result[0];
-      this.game.courseComplete.holesComplete = result[1];
-      this.calculateTotal();
-      this.loader.dismiss();
-    })
+    private afs: AngularFirestore,
+    public loadingCtrl: LoadingController,
+    public popoverCtrl: PopoverController) {
+      
+      
+
+      this.loader = this.loadingCtrl.create({ content: "Please wait..." });
+      this.total = {};
+      this.totalBrut = {};
+      this.totalNet = {};
+  
+      this.totali = {};
+      this.totaliBrut = {};
+      this.totaliNet = {};
+  
+      this.totalo = {};
+      this.totaloBrut = {};
+      this.totaloNet = {};
+
+
+      this.loader.present();
+      this.game = this.navParams.data.game;
+      Promise.all([
+        this.gs.getParticipantsDetail(this.game.participants),
+        this.gs.getHolesDetail(this.game.club, this.game.courseComplete.holes)
+      ]).then((result) => {
+        this.game.participantsComplete = result[0];
+        this.game.courseComplete.holesComplete = result[1];
+        this.calculateTotal();
+        this.loader.dismiss();
+      })
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad ScorecardPage');
+    
   }
 
   calculateTotal() {
-    this.total = {};
-    this.totalBrut = {};
-    this.totalNet = {};
 
-    this.totali = {};
-    this.totaliBrut = {};
-    this.totaliNet = {};
-
-    this.totalo = {};
-    this.totaloBrut = {};
-    this.totaloNet = {};
 
     this.game.participantsComplete.forEach(participant => {
       this.total[participant['uid']] = 0;
@@ -85,6 +96,22 @@ export class ScorecardPage {
       this.totalo[participant['uid']] = 0;
       this.totaloBrut[participant['uid']] = 0;
       this.totaloNet[participant['uid']] = 0;
+
+      this.parTotal = 0;
+      this.parTotali = 0;
+      this.parTotalo = 0;
+      this.game.courseComplete.holes.forEach((hole, index) => {
+        if (hole.detail.par) {
+          this.parTotal = this.parTotal + hole.detail.par;
+  
+          if (index < 9) {
+            this.parTotali = this.parTotali + hole.detail.par;
+          }
+          if (index >= 9) {
+            this.parTotalo = this.parTotalo + hole.detail.par;
+          }
+        }
+      });
 
       this.game.courseComplete.holesComplete.forEach((hole, index) => {
         if (this.game['scores'][hole.detail.holeId]) {
@@ -107,22 +134,8 @@ export class ScorecardPage {
         }
       });
     });
-    
-    this.parTotal = 0;
-    this.parTotali = 0;
-    this.parTotalo = 0;
-    this.game.courseComplete.holes.forEach((hole, index) => {
-      if (hole.detail.par) {
-        this.parTotal = this.parTotal + hole.detail.par;
 
-        if (index < 9) {
-          this.parTotali = this.parTotali + hole.detail.par;
-        }
-        if (index >= 9) {
-          this.parTotalo = this.parTotalo + hole.detail.par;
-        }
-      }
-    });
+
   }
 
   calculateNetPoints(holeh: number, participant: User, holePar: number, playerScore: number) {
@@ -197,6 +210,11 @@ export class ScorecardPage {
 
   calculateGrossPoints(holePar: number, playerScore: number) {
     return Math.max(holePar - playerScore + 2, 0);
+  }
+
+  editScore(game:any, hole:Hole, participant:string){
+    let popover = this.popoverCtrl.create(ScoreEditPage,{game:game, hole:hole, participant:participant})
+    popover.present();
   }
 
 }

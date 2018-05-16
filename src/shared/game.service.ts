@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { User, Course, Hole, Game } from '../shared/datamodel';
 
-import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from 'angularfire2/firestore';
+import { AngularFirestore} from 'angularfire2/firestore';
 
 
 @Injectable()
@@ -13,32 +13,35 @@ export class GameService {
 
   getGame(gameId: string, user?: string) {
     let gameComplete: any;
-    return new Promise<Game>((resolve) => {
+    return new Promise<Game>((resolve, reject) => {
       this.afs.collection('games').doc<Game>(gameId).valueChanges().subscribe(game => {
-        gameComplete = game;
-        this.afs.collection('clubs').doc(game.club).valueChanges().subscribe(club => {
-          gameComplete['clubComplete'] = club;
-          this.afs.collection('clubs').doc(game.club).collection('courses').doc<Course>(game.course).valueChanges().subscribe(course => {
-            gameComplete['courseComplete'] = course;
-            this.afs.collection('games').doc(gameId).collection('scores').snapshotChanges().subscribe(scores => {
-              gameComplete['scores'] = {};
-              scores.forEach(score => {
-                gameComplete['scores'][score.payload.doc.id] = score.payload.doc.data();
+        if(game){
+          gameComplete = game;
+          gameComplete['id']=gameId;
+          this.afs.collection('clubs').doc(game.club).valueChanges().subscribe(club => {
+            gameComplete['clubComplete'] = club;
+            this.afs.collection('clubs').doc(game.club).collection('courses').doc<Course>(game.course).valueChanges().subscribe(course => {
+              gameComplete['courseComplete'] = course;
+              this.afs.collection('games').doc(gameId).collection('scores').snapshotChanges().subscribe(scores => {
+                gameComplete['scores'] = {};
+                scores.forEach(score => {
+                  gameComplete['scores'][score.payload.doc.id] = score.payload.doc.data();
+                });
+                resolve(gameComplete);
               });
-              resolve(gameComplete);
-            });
+            })
           })
-        })
+        }
+        else{
+          reject('Game does not exist');
+        }
       })
     });
   }
 
   getCurrentHole(gameId: string) {
-    let hole: any;
-    let gameComplete: any;
     return new Promise<Hole>((resolve) => {
       this.afs.collection('games').doc<Game>(gameId).valueChanges().subscribe(game => {
-        gameComplete = game;
         this.afs.collection('clubs').doc(game.club).collection('holes').doc<Hole>(game.currentHole).valueChanges().subscribe(hole => {
           resolve(hole);
         })
@@ -99,9 +102,9 @@ export class GameService {
     let newscore={};
     newscore[participant]=score;
     if(isnew){
-      return new Promise((resolve) => {this.afs.collection('games').doc(game).collection('scores').doc(hole).set(newscore)});
+      return new Promise((resolve) => {this.afs.collection('games').doc(game).collection('scores').doc(hole).set(newscore).then(res => resolve())});
     }else{
-      return new Promise((resolve) => {this.afs.collection('games').doc(game).collection('scores').doc(hole).update(newscore)});
+      return new Promise((resolve) => {this.afs.collection('games').doc(game).collection('scores').doc(hole).update(newscore).then(res => resolve())});
     }
     
   }

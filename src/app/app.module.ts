@@ -8,6 +8,8 @@ import { AngularFirestoreModule } from 'angularfire2/firestore';
 import { AngularFireAuthModule } from 'angularfire2/auth';
 import { SharedModule } from '../shared/shared.module';
 import { ScorecardPageModule } from '../pages/scorecard/scorecard.module';
+import { NewGamePageModule } from '../pages/new-game/new-game.module';
+import { ScoreEditPageModule } from '../pages/score-edit/score-edit.module';
 
 import { environment } from '../../environments/environment';
 
@@ -33,7 +35,10 @@ import {GameService} from '../shared/game.service';
     BrowserModule,
     IonicModule.forRoot(MyApp), SharedModule,
     AngularFireModule.initializeApp(environment.firebase),
-    AngularFirestoreModule, AngularFireAuthModule, ScorecardPageModule
+    AngularFirestoreModule, AngularFireAuthModule, 
+    ScorecardPageModule,
+    NewGamePageModule, 
+    ScoreEditPageModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [

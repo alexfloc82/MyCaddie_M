@@ -1,11 +1,79 @@
 <ion-header>
   <ion-navbar>
     <ion-title>
-      About
+      Profile
     </ion-title>
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
+<ion-content>
+  <ion-segment [(ngModel)]="tab">
+    <ion-segment-button value="perso">
+      Perso
+    </ion-segment-button>
+    <ion-segment-button value="wood">
+      Bois
+    </ion-segment-button>
+    <ion-segment-button value="iron">
+      Fers
+    </ion-segment-button>
+    <ion-segment-button value="others">
+      Autres
+    </ion-segment-button>
+  </ion-segment>
+  <div [ngSwitch]="tab" *ngIf="user"  >
+    <ion-list inset *ngSwitchCase="'perso'">
+      <ion-item>
+        <ion-label fixed>Prénom</ion-label>
+        <ion-input [(ngModel)]="user.name"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label fixed>Nom</ion-label>
+        <ion-input [(ngModel)]="user.lastname"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label floating>Vous êtes</ion-label>
+        <ion-select [(ngModel)]="user.gender">
+          <ion-option value="male">un gentleman</ion-option>
+          <ion-option value="female">une lady</ion-option>
+        </ion-select>
+      </ion-item>
+      <ion-item>
+        <ion-label floating>Votre année de naissance?</ion-label>
+        <ion-input type="number" [(ngModel)]="user.yob"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label floating>Votre index?</ion-label>
+        <ion-input type="number" [(ngModel)]="user.handicap"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label floating>Gaucher ou droitier?</ion-label>
+        <ion-select [(ngModel)]="user.hand">
+          <ion-option value="R">droitier</ion-option>
+          <ion-option value="L">gaucher</ion-option>
+        </ion-select>
+      </ion-item>
+      <ion-item>
+          <ion-label floating>Vous partez des tees?</ion-label>
+          <ion-select [(ngModel)]="user.tees">
+              <ion-option value="-">-</ion-option>
+              <ion-option value="B">Blancs</ion-option>
+              <ion-option value="BL">Bleus</ion-option>
+              <ion-option value="Y">Jaunes</ion-option>
+              <ion-option value="R">Rouges</ion-option>
+          </ion-select>
+        </ion-item>
+    </ion-list>
+    <ion-list inset *ngSwitchCase="'wood'">
+    </ion-list>
+    <ion-list inset *ngSwitchCase="'iron'">
+    </ion-list>
+    <ion-list inset *ngSwitchCase="'others'">
+    </ion-list>
+  </div>
+
+  <div padding>
+      <button ion-button color="primary" block (click)="save()">Enregister</button>
+    </div>
 
 </ion-content>
