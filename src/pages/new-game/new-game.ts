@@ -5,6 +5,7 @@ import { Game, Course, Facility, User } from '../../shared/datamodel';
 
 import { AngularFirestore } from 'angularfire2/firestore';
 import { AngularFireAuth } from 'angularfire2/auth';
+import * as firebase from 'firebase';
 
 
 /**
@@ -29,6 +30,8 @@ export class NewGamePage {
   tab: string = "course";
   currentUserInfo: User;
 
+  friends: any[];
+
   constructor(
     public navCtrl: NavController,
     public NavPrms: NavParams,
@@ -46,21 +49,44 @@ export class NewGamePage {
       this.newGame.formula = currentGame.formula;
       this.newGame.isOpen = currentGame.isOpen;
       this.newGame.participants = currentGame.participants;
+      this.newGame.participants.forEach(part => this.newGame[part] = true);
       this.isNew = false;
       
     } else {
       this.newGame = new Game;
       this.newGame.formula = "A";
       this.newGame.participants.push(this.afAuth.auth.currentUser.uid);
+      this.newGame[this.afAuth.auth.currentUser.uid]=true;
       this.isNew = true;
     }
     this.afs.collection<Facility>('clubs').valueChanges().subscribe(clubs => this.clubs = clubs);
-    this.afs.collection('users').doc<User>(this.afAuth.auth.currentUser.uid).valueChanges().subscribe(user => this.currentUserInfo = user);
+    this.afs.collection('users').doc<User>(this.afAuth.auth.currentUser.uid).valueChanges().subscribe(user => {
+      this.currentUserInfo = user;
+      this.initializeItems();
+
+    });
 
   }
 
   ionViewDidLoad() {
     this.onClubSelect();
+  }
+
+  initializeItems() {
+    
+    return new Promise((resolve) => this.afs.collection('users').doc<User>(this.afAuth.auth.currentUser.uid).valueChanges().subscribe(user => {
+      this.friends = [];
+      let promiseArray = [];
+      user.friends.forEach(friend => {
+        promiseArray.push(firebase.firestore().collection('users').doc(friend.uid).get())
+      });
+      Promise.all<firebase.firestore.DocumentSnapshot>(promiseArray)
+        .then(results => {
+          results.forEach(userSnap => this.friends.push(userSnap.data()));
+          resolve();
+        }
+        )
+    }))
   }
 
   save() {
@@ -72,7 +98,7 @@ export class NewGamePage {
         this.afs.collection('games').doc(a.id).update({ id: a.id }).then(v => this.navCtrl.pop())
       })
     } else {
-      this.afs.collection('games').doc(newGame['id']).set(newGame);
+      this.afs.collection('games').doc(newGame['id']).set(newGame).then(v => this.navCtrl.pop());
     }
 
   }
@@ -92,6 +118,33 @@ export class NewGamePage {
   onCourseSelect() {
     this.afs.collection<Facility>('clubs').doc(this.newGame.club).collection('courses').doc<Course>(this.newGame.course)
       .valueChanges().subscribe(course => this.firstHole = course.holes[0]['holeId']);
+  }
+
+  getItems(ev) {
+    // set val to the value of the ev target
+    var val = ev.target.value;
+    // Reset items back to all of the items
+    this.initializeItems().then(res => {
+      if (val && val.trim() != '') {
+        this.friends = this.friends.filter((item) => {
+          return (item['fullname'].toLowerCase().indexOf(val.toLowerCase()) > -1);
+        })
+      }
+    }
+    );
+  }
+
+  togglePlayer(frienduid:string){
+
+    if(!this.newGame[frienduid]){
+      this.newGame.participants.push(frienduid);
+      this.newGame[frienduid] = true;
+    }else{
+      this.newGame.participants = this.newGame.participants.filter(value => value !== frienduid);
+      this.newGame[frienduid] = false;
+    }
+
+
   }
 
 }

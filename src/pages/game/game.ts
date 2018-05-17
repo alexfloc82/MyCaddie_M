@@ -46,8 +46,7 @@ export class GamePage {
         })
         Promise.all(arrayProm)
         .then(gamecompletes => {
-          this.userGames= gamecompletes;
-          this.userGames = this.userGames.sort((a,b)=> (a.date > b.date)?1:-1)
+          this.userGames= gamecompletes.sort((a,b)=> (a.date < b.date)?1:-1);
           this.loader.dismiss();
         })
         .catch(err=>console.log(err))        

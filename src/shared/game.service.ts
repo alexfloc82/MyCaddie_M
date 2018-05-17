@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { User, Course, Hole, Game } from '../shared/datamodel';
 
-import { AngularFirestore} from 'angularfire2/firestore';
+import { AngularFirestore } from 'angularfire2/firestore';
 
 
 @Injectable()
@@ -15,9 +15,9 @@ export class GameService {
     let gameComplete: any;
     return new Promise<Game>((resolve, reject) => {
       this.afs.collection('games').doc<Game>(gameId).valueChanges().subscribe(game => {
-        if(game){
+        if (game) {
           gameComplete = game;
-          gameComplete['id']=gameId;
+          gameComplete['id'] = gameId;
           this.afs.collection('clubs').doc(game.club).valueChanges().subscribe(club => {
             gameComplete['clubComplete'] = club;
             this.afs.collection('clubs').doc(game.club).collection('courses').doc<Course>(game.course).valueChanges().subscribe(course => {
@@ -32,7 +32,7 @@ export class GameService {
             })
           })
         }
-        else{
+        else {
           reject('Game does not exist');
         }
       })
@@ -62,7 +62,7 @@ export class GameService {
     holes.forEach(hole => {
       promiseHole.push(new Promise<Hole>((resolve, reject) =>
         this.afs.collection('clubs').doc(club).collection('holes').doc<Hole>(hole.holeId).valueChanges().subscribe(holeDetail => {
-          hole.detail=holeDetail;
+          hole.detail = holeDetail;
           resolve(hole);
         })
       ))
@@ -82,12 +82,12 @@ export class GameService {
     return Promise.all(promiseUser)
   }
 
-  getParticipantDetail(user: string){
+  getParticipantDetail(user: string) {
     return new Promise<User>((resolve) => {
-         this.afs.collection('users').doc<User>(user).valueChanges().subscribe(user => {
-           resolve(user);
-         })
-       });
+      this.afs.collection('users').doc<User>(user).valueChanges().subscribe(user => {
+        resolve(user);
+      })
+    });
   }
 
   getScores(game: string, hole: string) {
@@ -98,18 +98,29 @@ export class GameService {
     });
   }
 
-  saveScore(game: string, hole: string, participant:string, score:number, isnew?:boolean){
-    let newscore={};
-    newscore[participant]=score;
-    if(isnew){
-      return new Promise((resolve) => {this.afs.collection('games').doc(game).collection('scores').doc(hole).set(newscore).then(res => resolve())});
-    }else{
-      return new Promise((resolve) => {this.afs.collection('games').doc(game).collection('scores').doc(hole).update(newscore).then(res => resolve())});
-    }
-    
+  saveScore(game: string, hole: string, participant: string, score: number, isnew?: boolean) {
+    let newscore = {};
+    newscore[participant] = score;
+    return new Promise((resolve) => {
+      let subscription = this.afs.collection('games').doc(game).collection('scores').doc(hole).valueChanges().subscribe(score => {
+        if (score) {
+          this.afs.collection('games').doc(game).collection('scores').doc(hole).update(newscore).then(res => {
+            resolve();
+            subscription.unsubscribe();
+          });
+        }
+        else {
+          this.afs.collection('games').doc(game).collection('scores').doc(hole).set(newscore).then(res => {
+            resolve();
+            subscription.unsubscribe();
+          });
+        }
+      });
+    });
+
   }
 
-  setStatus(game:string, isOpen:boolean){
+  setStatus(game: string, isOpen: boolean) {
     let obj = {};
     obj['isOpen'] = isOpen;
     return this.afs.collection('games').doc(game).update(obj)

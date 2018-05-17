@@ -46,14 +46,20 @@
       </ion-item>
     </ion-list>
     <ion-list inset *ngSwitchCase="'players'">
-        <ion-list>
             <ion-item>
               <ion-avatar item-start>
                 <img [src]="currentUserInfo.picture">
               </ion-avatar>
               <h2>{{currentUserInfo.fullname}}</h2>
             </ion-item>
-          </ion-list>
+          <ion-searchbar (ionInput)="getItems($event)"></ion-searchbar>
+            <ion-item *ngFor="let friend of friends">
+                <ion-avatar item-start>
+                    <img [src]="friend.picture">
+                  </ion-avatar>
+                  <ion-label><h2>{{friend.fullname}}</h2></ion-label>
+                  <ion-toggle (ionChange)="togglePlayer(friend.uid)" [checked]="newGame[friend.uid]"></ion-toggle>
+            </ion-item>
     </ion-list>
   </div>
 

@@ -33,7 +33,8 @@ export class ScoreEditPage {
 
   save() {
     if(Number(this.selectedScore) > 0){
-      this.gs.saveScore(this.game.id, this.hole.holeId, this.participant.uid, Number(this.selectedScore), true).then(res => this.navCtrl.dismiss());
+      this.gs.saveScore(this.game.id, this.hole.holeId, this.participant.uid, Number(this.selectedScore))
+      .then(res => this.navCtrl.dismiss());
     }
   }
 
