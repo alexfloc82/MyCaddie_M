@@ -222,6 +222,7 @@ export class ScorecardPage {
   editScore(game: any, hole: Hole, participant: string) {
     let popover = this.popoverCtrl.create(ScoreEditPage, { game: game, hole: hole, participant: participant })
     popover.present();
+    popover.onDidDismiss(res => this.calculateTotal());
   }
 
 }

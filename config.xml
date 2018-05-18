@@ -95,6 +95,7 @@
     <plugin name="cordova-plugin-customurlscheme" spec="^4.3.0">
         <variable name="URL_SCHEME" value="io.ionic.mycaddie" />
     </plugin>
+    <plugin name="cordova-sqlite-storage" spec="^2.3.1" />
     <engine name="ios" spec="^4.5.4" />
     <engine name="browser" spec="~5.0.3" />
 </widget>

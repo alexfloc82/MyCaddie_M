@@ -3,6 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { MyApp } from './app.component';
 
+import { IonicStorageModule } from '@ionic/storage';
 import { AngularFireModule } from 'angularfire2';
 import { AngularFirestoreModule } from 'angularfire2/firestore';
 import { AngularFireAuthModule } from 'angularfire2/auth';
@@ -36,6 +37,10 @@ import {GameService} from '../shared/game.service';
     BrowserModule,
     IonicModule.forRoot(MyApp), SharedModule,
     AngularFireModule.initializeApp(environment.firebase),
+    IonicStorageModule.forRoot({
+      name: '__myCaddiedb',
+         driverOrder: [ 'sqlite', 'websql']
+    }),
     AngularFirestoreModule, AngularFireAuthModule, 
     ScorecardPageModule,
     NewGamePageModule, 

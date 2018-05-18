@@ -12,6 +12,8 @@ import * as firebase from 'firebase/app';
 
 import { User } from '../../shared/datamodel';
 
+import { Storage } from '@ionic/storage';
+
 @Component({
   templateUrl: 'tabs.html'
 })
@@ -20,26 +22,41 @@ export class TabsPage {
   tab1Root = GamePage;
   tab2Root = UserPage;
   tab3Root = ContactPage;
-  isLogged:boolean=false;
+  isLogged: boolean = false;
   loader: Loading;
 
   constructor(
     public navCtrl: NavController,
+    public st: Storage,
     public navParams: NavParams,
     private afAuth: AngularFireAuth,
     private afs: AngularFirestore,
     public loadingCtrl: LoadingController) {
-      this.loader = this.loadingCtrl.create({ content: "Please wait..." });
-      this.loader.present();
+    this.loader = this.loadingCtrl.create({ content: "Please wait..." });
+    this.loader.present();
+    this.st.get("credential")
+      .then(cred => {
+        if (cred) {
+          let creden = firebase.auth.GoogleAuthProvider.credential(cred.idToken, cred.accessToken);
+          this.afAuth.auth.signInAndRetrieveDataWithCredential(creden)
+            .then(res => {
+              this.isLogged = true;
+              this.loader.dismiss();
+            })
+            .catch(err => console.log(err))
+        }
+      })
+      .catch(err => console.log(err))
   }
 
   ionViewDidLoad() {
-    if(this.afAuth.auth.currentUser){
+    if (this.afAuth.auth.currentUser) {
       this.isLogged = true;
       this.loader.dismiss();
-    }else{
+    } else {
       this.afAuth.auth.getRedirectResult().then((credential) => {
-        if (credential.additionalUserInfo){
+        if (credential.additionalUserInfo) {
+          this.st.set("credential", credential.credential);
           if (credential.additionalUserInfo.isNewUser) {
             let profile = credential.additionalUserInfo.profile;
             let user = new User;
@@ -57,11 +74,11 @@ export class TabsPage {
               this.loader.dismiss();
             })
           }
-          else{
+          else {
             this.isLogged = true;
             this.loader.dismiss();
           }
-        }else{
+        } else {
           this.loader.dismiss();
         }
       });
@@ -74,9 +91,9 @@ export class TabsPage {
     this.afAuth.auth.signInWithRedirect(provider).catch(err => alert(err));
   }
 
-  logout(){
+  logout() {
     this.afAuth.auth.signOut().then(res => this.isLogged = false)
   }
 
-  
+
 }
